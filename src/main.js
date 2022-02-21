@@ -19,8 +19,6 @@ import 'aos/dist/aos.css'
 const gCal = {
   apiKey: process.env.VUE_APP_MY_GCAL_API_KEY,
   clientId: process.env.VUE_APP_MY_CLIENT_ID,
-  discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-  scope: 'https://www.googleapis.com/auth/calendar.events',
 }
 
 Vue.use(VueCookies)

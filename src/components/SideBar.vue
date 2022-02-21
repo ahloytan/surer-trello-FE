@@ -15,7 +15,6 @@
               <span class="has-text-weight-bold has-text-centered has-text-link-dark is-size-6">{{loggedUser}}</span>
             </b-menu-list>
             <b-menu-list label="Menu">
-              <b-menu-item @click="resetHighlight('tasks')" icon="tasks" label="My Tasks"></b-menu-item>
               <b-menu-item @click="resetHighlight('projects')" icon="project-diagram" label="Team Projects"></b-menu-item>
               <b-menu-item @click="resetHighlight('dashboard')" icon="tachometer-alt" label="My Dashboard"></b-menu-item>
             </b-menu-list>
@@ -70,8 +69,8 @@ export default {
     //https://stackoverflow.com/questions/52468088/vue-router-call-function-after-route-has-loaded
     //Wait until router loaded then highlight the correct item in the sidebar
     this.$router.onReady(() => {
-      let thePage = ["Tasks", "Projects", "Dashboard"];
-      let pos = thePage.indexOf(this.$route.name) == - 1 ? 2 : thePage.indexOf(this.$route.name);
+      let thePage = ["Projects", "Dashboard"];
+      let pos = thePage.indexOf(this.$route.name) == -1 ? 1 : thePage.indexOf(this.$route.name);
       document.getElementsByClassName('icon-text')[pos].classList.add("is-active","is-expanded");
     })
   } //end of mounted

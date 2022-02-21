@@ -22,34 +22,10 @@
 					</div>
 				</div>
 			</div>
-
-			<div id="slackBtnHolder">
-				<div v-if="project.slackConnected" class="slackButton">
-					<img alt="Add to Slack" height="40" width="120" src="../assets/images/slack_logo.png" />
-					<p>Connected</p>
-				</div>
-
-				<div v-else-if="connectingSlack" class="slackButton">
-					<img alt="Add to Slack" height="40" width="120" src="../assets/images/slack_logo.png" />
-					<p>Connecting </p>
-					<b-loading :is-full-page="false" v-model="connectingSlack" :can-cancel="true"></b-loading>
-				</div>
-
-				<div v-else class="slackLink" v-on:click="addSlack">
-					<img alt="Add to Slack" height="40" width="120" src="https://platform.slack-edge.com/img/add_to_slack.png" srcSet="https://platform.slack-edge.com/img/add_to_slack.png 1x, https://platform.slack-edge.com/img/add_to_slack@2x.png 2x" />
-				</div>
-			</div>
-
 		</div>
 
 		<div class="container" id="task-board">
 			<div class="columns items">
-				<div class="column item">
-					<projectMeetings
-                        :projectid=Number(projectId)
-					/>
-				</div>
-
 				<div class="column item">
 					<TaskColumn
 						header="To do"
@@ -98,20 +74,17 @@
 <script>
 // @ is an alias to /src
 import TaskColumn from '@/components/Tasks/TaskColumn.vue'
-import projectMeetings from '@/components/ProjectMeetings.vue'
 import ProjectService from '@/api/services/ProjectService'
 import TaskService from '@/api/services/TaskService'
-import SlackService from '@/api/services/SlackService'
 import Toast from '@/components/Toast.vue'
 import Loader from '@/components/Loader.vue'
 
 export default {
   name: 'TeamProject',
   components: {
-    TaskColumn,
+  TaskColumn,
 	Toast,
 	Loader,
-	projectMeetings
   },
 	data() {
 		return {
@@ -121,15 +94,11 @@ export default {
 				project_id: "",
 				description: "",
 				members: [],
-				slackConnected: false,
 			},
-			meetings: [],
 			todo: [],
 			inprogress: [],
 			done: [],
 			state: "",
-			connectingSlack: false,
-			slackLink: ""
 		}
 	},
 	methods: {
@@ -241,15 +210,9 @@ export default {
 				this.$refs.toast.result(null, error.response);
 			}
 		},
-		async addSlack() {
-			this.connectingSlack = true
-			await SlackService.slackAuth(this.projectId, this.state)
-			window.location.href = this.slackLink;
-		}
 	},
 	mounted() {
 		this.state = Math.random().toString(36).slice(2);
-		this.slackLink = `https://slack.com/oauth/v2/authorize?state=${this.state}&client_id=2563060818085.2566073501923&scope=channels:join,chat:write,incoming-webhook,workflow.steps:execute&user_scope=`
 		Promise.all([this.getProject(this.projectId), this.getProjectTasks(this.projectId)]).then(() => {
 			this.isLoading = false;
 		});
@@ -318,42 +281,6 @@ export default {
 		position: relative;
 		display: inline-block;
 		top: -10px;
-	}
-
-	#slackBtnHolder{
-		position:absolute;
-		top: 0;
-		right: 15px;
-
-		@include breakpoint(tablet){
-			right: 0px;
-		}
-	}
-
-	.slackButton {
-		display: flex;
-		align-items: center;
-		border: 1px solid $grey-lighter;
-		width: 120px;
-		padding: 5px;
-		border-radius: 8px;
-		justify-content: space-evenly;
-		position: absolute;
-		right: 0;
-
-		img {
-			width: 20px;
-		}
-
-		p {
-			margin-left: 5px;
-			font-weight: bold;
-		}
-	}
-
-	.slackLink {
-		// position: absolute;
-		cursor: pointer;
 	}
 
 	.corrector{
