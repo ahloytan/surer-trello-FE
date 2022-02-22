@@ -22,12 +22,12 @@
 				<h1 class="is-size-5 has-text-weight-medium is-italic has-text-centered mt-2">Create or join a project!</h1>
 				<img alt="Add Project!"  src="../assets/images/team.png" />
 			</div>
-			
+
 			<div class="container mt-3" id="team-list" style="margin-top: 15px"
-				v-for="(project, index) in projects" 
-				v-bind:key="index+'-'+project.description" 
+				v-for="(project, index) in projects"
+				v-bind:key="index+'-'+project.description"
 				@click="redirect(project.project_id)"
-			>				
+			>
 				<div class="columns items">
 					<div class="column item">
 						<ProjectRow
@@ -55,7 +55,6 @@ import ProjectRow from '@/components/Projects/ProjectRow.vue'
 import ProjectModal from '@/components/Projects/ProjectModal.vue'
 import ProjectService from '@/api/services/ProjectService'
 import TeamService from '@/api/services/TeamService'
-// import TaskService from '@/api/services/TaskService'
 import Toast from '@/components/Toast.vue'
 import Loader from '@/components/Loader.vue'
 
@@ -103,7 +102,7 @@ export default {
                 this.projects.push(joinTeam)
 				this.availableProjects.splice(this.availableProjects.indexOf(parseInt(teamId)), 1)
 				this.joinedTeam = true
-			} catch (error) { 
+			} catch (error) {
 				this.$refs.toast.result(null, error.response);
 			}
 			return this.joinedTeam
