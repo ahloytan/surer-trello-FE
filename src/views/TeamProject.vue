@@ -21,8 +21,20 @@
 						{{person.fname[0]}}{{person.lname[0]}}
 					</div>
 				</div>
+
+				<div class="is-pulled-right">
+					<b-button type="is-link is-light"  @click="isModalActive = true; teamModalType='cDesc'">
+						<i class="far fa-edit"></i> Edit
+					</b-button>
+				</div>
 			</div>
 		</div>
+
+		<ProjectModal
+			v-bind:isModalActive="isModalActive"
+			v-bind:teamModalType="teamModalType"
+			@close ="isModalActive=false"
+		></ProjectModal>
 
 		<div class="container" id="task-board">
 			<div class="columns items">
@@ -30,6 +42,7 @@
 					<TaskColumn
 						header="To do"
 						:tasks="todo"
+						:reachLimit = "this.todo.length < this.max"
 						:members="project.members"
 						cardType="not started"
 						v-bind:draggable="true"
@@ -43,6 +56,7 @@
 					<TaskColumn
 						header="In progress"
 						:tasks="inprogress"
+						:reachLimit = "this.inprogress.length < this.max"
 						:members="project.members"
 						cardType="started"
 						v-bind:draggable="true"
@@ -57,6 +71,7 @@
 					<TaskColumn
 						header="Done"
 						:tasks="done"
+						:reachLimit = "this.done.length < this.max"
 						:members="project.members"
 						cardType="completed"
 						v-bind:draggable="true"
@@ -74,6 +89,7 @@
 <script>
 // @ is an alias to /src
 import TaskColumn from '@/components/Tasks/TaskColumn.vue'
+import ProjectModal from '@/components/Projects/ProjectModal.vue'
 import ProjectService from '@/api/services/ProjectService'
 import TaskService from '@/api/services/TaskService'
 import Toast from '@/components/Toast.vue'
@@ -85,9 +101,12 @@ export default {
   TaskColumn,
 	Toast,
 	Loader,
+	ProjectModal,
   },
 	data() {
 		return {
+			isModalActive: false,
+			teamModalType: "",
 			isLoading: true,
 			projectId: this.$route.params.slug,
 			project: {
@@ -99,6 +118,7 @@ export default {
 			inprogress: [],
 			done: [],
 			state: "",
+			max: 2
 		}
 	},
 	methods: {
@@ -131,32 +151,34 @@ export default {
 
 		},
 		async updateMove(newPosition, status) {
-			let currentTaskId;
+				let currentTaskId;
 
-			if (status === "started") {
-				currentTaskId = this.inprogress[newPosition].task_id;
+				if (status === "started") {
+					currentTaskId = this.inprogress[newPosition].task_id;
 
-			} else if (status === "completed") {
-				currentTaskId = this.done[newPosition].task_id;
+				} else if (status === "completed") {
+					currentTaskId = this.done[newPosition].task_id;
 
-			} else if (status === "not started") {
-				currentTaskId = this.todo[newPosition].task_id;
+				} else if (status === "not started") {
+					currentTaskId = this.todo[newPosition].task_id;
 
-			} else {
-				this.$refs.toast.result(null, {data: {error: "invalid completion_status"}});
-				return
-			}
-			try {
-				const updateBody = {
-					'project_id': this.projectId,
-					'task_id': currentTaskId,
-					'new_position': newPosition,
-					'new_status': status,
+				} else {
+					this.$refs.toast.result(null, {data: {error: "invalid completion_status"}});
+					return
 				}
-				await TaskService.updateTaskPosition(updateBody)
-			} catch (error) {
-				this.$refs.toast.result(null, error.response);
-			}
+				try {
+					const updateBody = {
+						'project_id': this.projectId,
+						'task_id': currentTaskId,
+						'new_position': newPosition,
+						'new_status': status,
+					}
+					await TaskService.updateTaskPosition(updateBody)
+				} catch (error) {
+					this.$refs.toast.result(null, error.response);
+				}
+
+
 
 		},
 		async getProject(projectId) {
@@ -212,6 +234,7 @@ export default {
 		},
 	},
 	mounted() {
+
 		this.state = Math.random().toString(36).slice(2);
 		Promise.all([this.getProject(this.projectId), this.getProjectTasks(this.projectId)]).then(() => {
 			this.isLoading = false;

@@ -3,7 +3,7 @@
     <div class="card">
 			<div class="card-content has-text-left">
 				<div class="create-project"
-					v-if="isNewProject">
+					v-if="teamModalType === 'cProj'">
 					<h2 class="is-size-6 has-text-weight-bold">Create New Project</h2>
 					<div class="task-description mt-3">
 						<b-field
@@ -32,7 +32,7 @@
 				</div>
 
 				<div class="create-project"
-					v-else>
+					v-else-if="teamModalType === 'jProj'">
 					<h2 class="is-size-6 has-text-weight-bold">Join Project Team</h2>
 					<div class="task-description mt-3">
 						<b-field
@@ -57,6 +57,37 @@
 					</div>
 
 				</div>
+
+        <div class="create-project"
+          v-else-if="teamModalType === 'cDesc'">
+          <h2 class="is-size-6 has-text-weight-bold">Edit Project Details</h2>
+          <div class="task-description mt-3">
+            <b-field>
+              <b-input
+                v-model="projNameChange"
+                rows="1"
+                placeholder="Enter new name">
+              </b-input>
+            </b-field>
+            <b-field>
+              <b-input
+                v-model="projDescChange"
+                rows="1"
+                placeholder="Enter new description">
+              </b-input>
+            </b-field>
+          </div>
+
+          <div class="btns">
+            <b-button
+              type="is-link is-success"
+              @click="checkProjectId() ? (joinTeam(projectId),projectId='',$emit('close')) : (joinTeamMsg='Invalid Project ID', joinTeamMsgType='is-danger')">
+              Change
+            </b-button>
+          </div>
+
+        </div>
+
 			</div>
 		</div>
 	</b-modal>
@@ -68,7 +99,7 @@
 		props: {
 			availableProjects: Array,
 			isModalActive: Boolean,
-			isNewProject: Boolean,
+			teamModalType: String,
 			task: Object,
 			members: Array,
 		},
@@ -76,6 +107,8 @@
 			return {
 				projectDescription: "",
 				projectId: "",
+        projNameChange: "",
+        projDescChange: "",
 				joinTeamMsg: "",
 				joinTeamMsgType: "",
 				createProjectMsg: "",
@@ -107,6 +140,7 @@
 			checkProjectId(){
 				this.joinTeamMsg=''
 				this.joinTeamMsgType=''
+
 				let valid = this.availableProjects.includes(parseInt(this.projectId))
 				if (!valid) {this.projectId = ''}
 				return valid

@@ -7,7 +7,7 @@
     <div class="tasks">
       <draggable
         v-if="draggable"
-        :list="tasks" group="tasks"
+        :list="tasks" :group="{name: 'tasks', put: reachLimit}"
         :options="{delayOnTouchOnly:true, delay: 400, animation: 250}"
         @change="updateStatus($event, cardType)">
         <TaskCard v-for="(task, index) in tasks"
@@ -34,12 +34,8 @@
 
     </div>
 
-    <div v-if="draggable" class="add" id="add-task">
+    <div v-if="draggable && reachLimit" class="add" id="add-task">
       <p @click="isModalActive = true; isNewTask = true"><i class="fas fa-plus-circle"></i>  Add a task</p>
-    </div>
-
-    <div v-else class="add" id="add-meeting">
-      <p @click="isMeetingActive = true;"><i class="fas fa-plus-circle"></i>  Add a meeting</p>
     </div>
 
 
@@ -73,12 +69,12 @@ export default {
     draggable: Boolean,
     cardType: String,
     members: Array,
-    projectid: String
+    projectid: String,
+    reachLimit: Boolean
   },
   data() {
     return {
-        isModalActive: false,
-        isMeetingActive: false
+        isModalActive: false
     }
   },
   methods: {
@@ -89,9 +85,10 @@ export default {
       console.log(event, status)
       if (event.added) {
         this.$emit("moveTask", event.added.newIndex, status)
-      } else if (event.moved) {
+      } else if (event.moved){
         this.$emit("moveTask", event.moved.newIndex, status)
       }
+
     },
     updateTask(task) {
       this.$emit("updateTask", task)

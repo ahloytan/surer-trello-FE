@@ -16,9 +16,9 @@
 							</h1>
 
 							<div v-if="!editingTask || !isMobile" id="status">
-								<b-tag v-if="cardTask.completion_status === 'started'" type="is-warning"><p class="is-uppercase">In progress</p></b-tag>
-								<b-tag v-else-if="cardTask.completion_status === 'completed'" type="is-success"><p class="is-uppercase">Done</p></b-tag>
-								<b-tag v-else-if="cardTask.completion_status === 'not started'" type="is-danger"><p class="is-uppercase">To do</p></b-tag>
+								<b-tag v-if="this.cardType === 'started'" type="is-warning"><p class="is-uppercase">In progress</p></b-tag>
+								<b-tag v-else-if="this.cardType === 'completed'" type="is-success"><p class="is-uppercase">Done</p></b-tag>
+								<b-tag v-else-if="this.cardType === 'not started'" type="is-danger"><p class="is-uppercase">To do</p></b-tag>
 							</div>
 						</div>
 

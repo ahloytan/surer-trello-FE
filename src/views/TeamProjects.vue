@@ -8,10 +8,10 @@
 			</div>
 			<div id="buttons">
 				<div id="new" v-bind:align="projects.length===0 ? 'center' : '' ">
-				<div class="button mr-3" @click="isModalActive = true; isNewProject = true">
+				<div class="button mr-3" @click="isModalActive = true; teamModalType = 'cProj'">
 					Create New Project
 				</div>
-				<div class="button" @click="isModalActive = true; isNewProject = false">
+				<div class="button" @click="isModalActive = true; teamModalType = 'jProj'">
 					Join Project Team
 				</div>
 				</div>
@@ -43,7 +43,7 @@
 		<ProjectModal
 			v-bind:isModalActive="isModalActive"
 			v-bind:availableProjects="availableProjects"
-			v-bind:isNewProject="isNewProject"
+			v-bind:teamModalType="teamModalType"
 			@close ="isModalActive=false"
 		></ProjectModal>
 	</div>
@@ -71,7 +71,7 @@ export default {
 	data() {
 		return {
 			email: "",
-			isNewProject: false,
+			teamModalType: "",
 			isModalActive: false,
 			isLoading: true,
 			joinedTeam: false,
@@ -110,7 +110,7 @@ export default {
 		async getAllProjectTeams() {
 			try {
 				let project = await ProjectService.getAllProjects()
-				for (let id in project){
+				for (let id of project){
 					if (!this.projectIds.includes(parseInt(id))){
 						this.availableProjects.push(parseInt(id))
 					}

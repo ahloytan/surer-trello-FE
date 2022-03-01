@@ -23,10 +23,10 @@
 					</p>
 				</div>
 
-				<div v-if="!draggable" class="column status has-text-left-mobile">
-					<b-tag v-if="task.completion_status === 'started'" type="is-warning"><p class="is-uppercase">In progress</p></b-tag>
-					<b-tag v-else-if="task.completion_status === 'completed'" type="is-success"><p class="is-uppercase">Done</p></b-tag>
-					<b-tag v-else-if="task.completion_status === 'not started'" type="is-danger"><p class="is-uppercase">To do</p></b-tag>
+				<div v-if="draggable" class="column status has-text-left-mobile">
+					<b-tag v-if="this.cardType === 'started'" type="is-warning"><p class="is-uppercase">In progress</p></b-tag>
+					<b-tag v-else-if="this.cardType === 'completed'" type="is-success"><p class="is-uppercase">Done</p></b-tag>
+					<b-tag v-else-if="this.cardType === 'not started'" type="is-danger"><p class="is-uppercase">To do</p></b-tag>
 				</div>
 			</div>
 		</div>
@@ -73,8 +73,6 @@
 			openModal() {
 				if (this.cardType !== "meeting") {
 					this.isModalActive = true
-				} else {
-					// link to meeting page
 				}
 			},
 			removeTask() {

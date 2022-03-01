@@ -21,7 +21,7 @@ const routes = [
   },
   {
     path: '/project/:slug',
-    name: 'Project',
+    name: 'Projects',
     component: () => import(/* webpackChunkName: "about" */ '../views/TeamProject.vue'),
     meta: {
       requiresAuth: true,
