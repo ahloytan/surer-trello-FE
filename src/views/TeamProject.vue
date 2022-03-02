@@ -123,7 +123,7 @@ export default {
 			inprogress: [],
 			done: [],
 			state: "",
-			max: 2
+			max: process.env.VUE_APP_MAX_CARD
 		}
 	},
 	methods: {
