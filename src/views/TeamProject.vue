@@ -5,8 +5,7 @@
 		<div class="headerInfo">
 			<div class="team-header ml-3">
 				<h2 class="is-inline-block team-name is-size-5">
-					{{ project.description }} (ID: {{project.project_id}}
-					)
+					{{ project.description }} (ID: {{project.project_id}})
 				</h2>
 				<div id="tooltip">
 					<b-tooltip label="Send ID to members to join team">
@@ -22,7 +21,11 @@
 					</div>
 				</div>
 
-				<div class="is-pulled-right">
+				<h3 class="is-size-7 mb-3">
+					{{ project.details }}
+				</h3>
+
+				<div class="is-inline-mobile">
 					<b-button type="is-link is-light"  @click="isModalActive = true; teamModalType='cDesc'">
 						<i class="far fa-edit"></i> Edit
 					</b-button>
@@ -90,6 +93,7 @@
 // @ is an alias to /src
 import TaskColumn from '@/components/Tasks/TaskColumn.vue'
 import ProjectModal from '@/components/Projects/ProjectModal.vue'
+import TeamService from '@/api/services/TeamService'
 import ProjectService from '@/api/services/ProjectService'
 import TaskService from '@/api/services/TaskService'
 import Toast from '@/components/Toast.vue'
@@ -111,6 +115,7 @@ export default {
 			projectId: this.$route.params.slug,
 			project: {
 				project_id: "",
+				details: "",
 				description: "",
 				members: [],
 			},
@@ -122,6 +127,18 @@ export default {
 		}
 	},
 	methods: {
+		async changeProjDetails(name, desc) {
+			try {
+				const change = await TeamService.changeProjDetails(this.projectId, name, desc)
+				this.project.description = change.name
+				this.project.details = change.desc
+
+			} catch (error) {
+				this.$refs.toast.result(null, error.response);
+			}
+			return this.joinedTeam
+		},
+
 		async addTask(completion_status, task) {
 			let position;
 			if (completion_status === "not started") {
@@ -255,11 +272,10 @@ export default {
 		}
 
 		.team-members {
-			margin-top: 10px;
+			margin: 10px 0;
 			@include breakpoint(tablet) {
 				display: inline-block;
-				margin-left: 10px;
-				margin-top: 0;
+				margin: 0 0 0 10px;
 			}
 		}
 	}

@@ -35,6 +35,20 @@ class TeamService extends BaseApiService {
             return this.handleError(error);
         }
     }
+
+    async changeProjDetails(projectId, name, desc){
+      try{
+        let team = await axiosClient.get("/change_proj_details",{params: {
+          project_id: projectId,
+          description: name,
+          details: desc
+        }});
+
+        return team.data
+      } catch (error) {
+          return this.handleError(error);
+      }
+    }
 }
 
 export default new TeamService();

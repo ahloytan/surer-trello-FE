@@ -62,14 +62,19 @@
           v-else-if="teamModalType === 'cDesc'">
           <h2 class="is-size-6 has-text-weight-bold">Edit Project Details</h2>
           <div class="task-description mt-3">
-            <b-field>
+            <b-field
+              v-bind:type="joinTeamMsgType"
+            >
               <b-input
                 v-model="projNameChange"
                 rows="1"
                 placeholder="Enter new name">
               </b-input>
             </b-field>
-            <b-field>
+            <b-field
+            v-bind:type="joinTeamMsgType"
+            v-bind:message="joinTeamMsg"
+            >
               <b-input
                 v-model="projDescChange"
                 rows="1"
@@ -81,7 +86,7 @@
           <div class="btns">
             <b-button
               type="is-link is-success"
-              @click="checkProjectId() ? (joinTeam(projectId),projectId='',$emit('close')) : (joinTeamMsg='Invalid Project ID', joinTeamMsgType='is-danger')">
+              @click="(projNameChange && projDescChange) ? (changeProjDetails(projNameChange, projDescChange), $emit('close')) : (joinTeamMsg='Please enter something in both fields', joinTeamMsgType='is-danger')">
               Change
             </b-button>
           </div>
@@ -144,7 +149,10 @@
 				let valid = this.availableProjects.includes(parseInt(this.projectId))
 				if (!valid) {this.projectId = ''}
 				return valid
-			}
+			},
+      changeProjDetails(name, desc){
+        this.$parent.changeProjDetails(name, desc)
+      },
 		},
 		mounted() {
 		}
